@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestros recuerdos</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, serif;
+  background: #fff0f5;
+  text-align: center;
+}
+
+/* INICIO */
+.start-screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CONTENIDO */
+.page {
+  max-width: 680px;
+  margin: auto;
+  padding: 2rem 1rem;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.title { color: #c2185b; }
+.subtitle { color: #ad1457; margin-bottom: 1rem; }
+
+.music-btn {
+  background: #e91e63;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+/* FOTOS */
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .photos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photo-slot {
+  cursor: pointer;
+}
+
+.photo-slot img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* MENSAJES */
+.message-card {
+  background: #fce4ec;
+  border-radius: 14px;
+  padding: 1rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.message-label {
+  font-size: 11px;
+  color: #e91e63;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.message-card p {
+  color: #880e4f;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+/* FLORES */
+.flowers {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.flowers img {
+  width: 150px;
+  margin-top: 10px;
+}
+
+.flowers p {
+  margin-top: 10px;
+  color: #ad1457;
+  font-style: italic;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal img {
+  max-width: 90%;
+  border-radius: 12px;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- INICIO -->
+<div class="start-screen" id="start">
+  <h2 style="color:#c2185b;">Para ti 💗</h2>
+  <button class="music-btn" onclick="playMusic()">Toca aquí</button>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page" id="page">
+
+  <h2 class="title">Nuestros recuerdos</h2>
+  <div class="subtitle">siempre en mi corazón</div>
+
+  <!-- FOTOS -->
+  <div class="photos-grid">
+    <div class="photo-slot" onclick="openModal('MSG1.jpg')">
+      <img src="MSG1.jpg">
+    </div>
+    <div class="photo-slot" onclick="openModal('MSG2.jpg')">
+      <img src="MSG2.jpg">
+    </div>
+    <div class="photo-slot" onclick="openModal('MSG3.jpg')">
+      <img src="MSG3.jpg">
+    </div>
+  </div>
+
+  <!-- MENSAJES -->
+  <div class="message-card">
+    <div class="message-label">Un momento especial</div>
+    <p>
+No sé en qué instante exacto empezaste a volverte tan importante para mí, no hubo una fecha marcada ni un momento específico que pudiera señalar, simplemente pasó. Poco a poco te fuiste metiendo en mis pensamientos, en mis días, en mis emociones, hasta que sin darme cuenta ya eras parte de todo. Desde entonces, todo se siente diferente. Contigo no es solo reír o pasar el rato, contigo siento una tranquilidad que no había encontrado antes. Es como si en medio de todo el ruido del mundo, tú fueras ese lugar donde todo se calma, donde puedo ser yo sin miedo, donde simplemente estar contigo ya es suficiente para sentirme bien.
+    </p>
+  </div>
+
+  <div class="message-card">
+    <div class="message-label">Lo que más amo de ti</div>
+    <p>
+Amo la forma en la que eres, no solo en tus momentos buenos, sino también en tus días difíciles, cuando tal vez no tienes la mejor energía o cuando el mundo se te hace pesado. Amo tu autenticidad, porque no intentas ser alguien que no eres, porque te muestras tal cual, con tus virtudes y también con tus imperfecciones. No eres perfecta, y no necesitas serlo, porque lo que realmente vale es lo real que eres. Esa forma tuya de sentir, de pensar, de ser tan tú, es lo que me hace admirarte y quererte cada día más. Me gusta todo de ti, incluso esas partes que tal vez tú dudas, porque para mí son las que te hacen única.
+    </p>
+  </div>
+
+  <div class="message-card">
+    <div class="message-label">Mi promesa</div>
+    <p>
+No quiero prometerte algo irreal ni un cuento perfecto, porque sé que la vida no funciona así. Lo que sí quiero ofrecerte es algo verdadero, algo que se construya con ganas, con respeto y con intención. Prometo intentarlo de verdad, aprender, mejorar y hacer las cosas bien contigo. Prometo estar, no solo cuando todo sea fácil, sino también cuando haya momentos complicados. Porque si es contigo, entonces vale completamente la pena hacerlo bien, vale la pena cuidar lo que tenemos y hacerlo crecer de una forma bonita y sincera. No te prometo perfección, pero sí compromiso, sinceridad y un amor que quiera quedarse.
+    </p>
+  </div>
+
+  <!-- FLORES -->
+  <div class="flowers">
+    <p>Esta flor te representa… algo bonito, algo especial, algo que hace todo más lindo 💐</p>
+    <img src="flores.png">
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="close" onclick="closeModal()">✖</div>
+  <img id="modalImg">
+</div>
+
+<!-- AUDIO -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function playMusic(){
+  const music = document.getElementById("music");
+  music.play();
+
+  document.getElementById("start").style.display = "none";
+  document.getElementById("page").style.opacity = "1";
+}
+
+function openModal(img){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modalImg").src = img;
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
