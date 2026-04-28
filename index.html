@@ -4,222 +4,571 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nuestros recuerdos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --rose:       #d4648a;
+  --rose-dark:  #a83660;
+  --rose-deep:  #6b1a38;
+  --rose-light: #fce8f0;
+  --rose-pale:  #fff5f8;
+  --rose-mid:   #e8a0b8;
+  --cream:      #fdf6ee;
+  --ink:        #3d1a28;
+}
+
+html { scroll-behavior: smooth; }
 
 body {
-  font-family: Georgia, serif;
-  background: #fff0f5;
-  text-align: center;
+  font-family: 'Jost', sans-serif;
+  background: var(--rose-pale);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* INICIO */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(212,100,138,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(168,54,96,0.10) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ════════ PANTALLA INICIO ════════ */
 .start-screen {
-  height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  background: linear-gradient(160deg, #fdf0f5 0%, #f9dde9 60%, #f0c4d8 100%);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
 }
+.start-screen.hidden { opacity: 0; visibility: hidden; }
 
-/* CONTENIDO */
-.page {
-  max-width: 680px;
-  margin: auto;
-  padding: 2rem 1rem;
+.petals { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.petal {
+  position: absolute;
+  bottom: -40px;
+  animation: riseUp linear infinite;
   opacity: 0;
-  transition: opacity 1.5s ease;
+}
+@keyframes riseUp {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  8%   { opacity: 0.7; }
+  92%  { opacity: 0.4; }
+  100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
 }
 
-.title { color: #c2185b; }
-.subtitle { color: #ad1457; margin-bottom: 1rem; }
+.start-tag {
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+.start-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  color: var(--rose-deep);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.2;
+}
+.start-sub {
+  font-size: 0.82rem;
+  letter-spacing: 2px;
+  color: var(--rose-dark);
+  font-weight: 300;
+  text-transform: uppercase;
+}
 
-.music-btn {
-  background: #e91e63;
-  color: white;
+.open-btn {
+  margin-top: 0.5rem;
+  padding: 13px 38px;
   border: none;
-  padding: 12px 25px;
-  border-radius: 25px;
+  border-radius: 60px;
+  background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+  color: white;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-style: italic;
   cursor: pointer;
+  box-shadow: 0 6px 28px rgba(168,54,96,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.open-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 34px rgba(168,54,96,0.42); }
+.open-btn:active { transform: translateY(-1px); }
+
+/* ════════ PÁGINA PRINCIPAL ════════ */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.2rem 5rem;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.page.visible { opacity: 1; }
+
+.page-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 0.5rem;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  color: var(--rose-deep);
+  font-style: italic;
+  margin-bottom: 0.3rem;
+}
+.page-sub {
+  font-size: 0.78rem;
+  letter-spacing: 3px;
+  color: var(--rose-mid);
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
 }
 
-/* FOTOS */
+/* ─── FOTOS ─── */
 .photos-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  margin-bottom: 3rem;
 }
-
-@media (max-width: 600px) {
-  .photos-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 500px) {
+  .photos-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .photo-slot {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
   cursor: pointer;
+  position: relative;
+  box-shadow: 0 4px 18px rgba(168,54,96,0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.photo-slot:hover { transform: scale(1.03) translateY(-3px); box-shadow: 0 10px 32px rgba(168,54,96,0.28); }
+.photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+.photo-slot:hover img { transform: scale(1.07); }
+.photo-overlay {
+  position: absolute; inset: 0;
+  background: rgba(168,54,96,0.2);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+  font-size: 1.4rem;
+}
+.photo-slot:hover .photo-overlay { opacity: 1; }
+
+/* ─── SEPARADOR ─── */
+.section-divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 0.5rem 0 1.8rem;
+  color: var(--rose-mid);
+  font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+}
+.section-divider::before,
+.section-divider::after {
+  content: ''; flex: 1; height: 1px;
+}
+.section-divider::before { background: linear-gradient(to right, transparent, var(--rose-mid)); }
+.section-divider::after  { background: linear-gradient(to left,  transparent, var(--rose-mid)); }
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: var(--rose-dark);
+  font-style: italic;
+  margin-bottom: 1.4rem;
 }
 
-.photo-slot img {
-  width: 100%;
+/* ════════ CARTAS HORIZONTALES ════════ */
+.letters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.letter-item { border-radius: 12px; overflow: hidden; }
+
+/* BLOQUEADA */
+.letter-item.locked .letter-front {
+  background: #f7f0f3;
+  border: 1px dashed #dfc0ce;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
   border-radius: 12px;
 }
-
-/* MENSAJES */
-.message-card {
-  background: #fce4ec;
-  border-radius: 14px;
-  padding: 1rem;
-  margin-top: 1rem;
+.locked-badge {
+  width: 30px; height: 30px; min-width: 30px;
+  border-radius: 50%;
+  background: #eedde6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  color: #c0a0b0;
+}
+.locked-text {
+  flex: 1;
+  font-size: 0.75rem;
+  color: #c0a0b0;
+  font-style: italic;
   text-align: left;
 }
+.lock-icon { font-size: 0.95rem; opacity: 0.45; }
 
-.message-label {
-  font-size: 11px;
-  color: #e91e63;
-  margin-bottom: 6px;
+/* DISPONIBLE */
+.letter-item.available .letter-front {
+  background: white;
+  border: 1px solid var(--rose-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(168,54,96,0.06);
+  transition: all 0.2s ease;
+}
+.letter-item.available .letter-front:hover {
+  background: #fff8fb;
+  border-color: var(--rose-mid);
+  box-shadow: 0 6px 18px rgba(168,54,96,0.12);
+}
+.letter-item.available.open .letter-front {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: var(--rose-light);
+  background: #fff0f6;
+}
+
+.day-badge {
+  width: 36px; height: 36px; min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fde8f2, #f9d0e5);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.day-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--rose-dark);
+  line-height: 1;
+}
+.day-lbl {
+  font-size: 0.42rem;
+  color: var(--rose);
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-.message-card p {
-  color: #880e4f;
+.letter-meta { flex: 1; text-align: left; min-width: 0; }
+.letter-date {
+  font-size: 0.62rem;
+  color: var(--rose);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+.letter-preview {
+  font-size: 0.8rem;
+  color: #7a4058;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.letter-item.open .letter-preview { opacity: 0; }
+
+.letter-arrow {
+  font-size: 0.9rem;
+  color: var(--rose);
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.letter-item.open .letter-arrow { transform: rotate(180deg); }
+
+/* CUERPO */
+.letter-body {
+  background: white;
+  border: 1px solid var(--rose-light);
+  border-top: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, padding 0.3s ease;
+  padding: 0 18px;
+  box-shadow: 0 6px 18px rgba(168,54,96,0.08);
+}
+.letter-item.open .letter-body {
+  max-height: 400px;
+  padding: 16px 18px 18px;
+}
+
+.letter-body-inner {
+  border-left: 2px solid var(--rose-mid);
+  padding-left: 16px;
+  position: relative;
+}
+.letter-body-inner::before {
+  content: '❝';
+  position: absolute;
+  top: -10px; left: -11px;
+  font-size: 1.6rem;
+  color: var(--rose-mid);
+  opacity: 0.55;
+  line-height: 1;
+}
+.letter-body-inner p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--rose-deep);
   font-style: italic;
   line-height: 1.7;
 }
+.letter-sig {
+  text-align: right;
+  margin-top: 12px;
+  color: var(--rose);
+  font-size: 1rem;
+}
 
-/* FLORES */
+/* ─── FLORES ─── */
 .flowers {
-  margin-top: 2rem;
+  margin-top: 3rem;
+  padding: 1.8rem 1.5rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 22px rgba(168,54,96,0.1);
   text-align: center;
 }
-
-.flowers img {
-  width: 150px;
-  margin-top: 10px;
-}
-
 .flowers p {
-  margin-top: 10px;
-  color: #ad1457;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--rose-deep);
   font-style: italic;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.flowers img {
+  width: 120px;
+  margin-top: 1rem;
+  filter: drop-shadow(0 4px 12px rgba(168,54,96,0.2));
 }
 
-/* MODAL */
+/* ─── MODAL ─── */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
+  position: fixed; inset: 0;
+  background: rgba(20,5,12,0.9);
+  display: none; align-items: center; justify-content: center;
+  z-index: 999;
 }
-
+.modal.active { display: flex; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .modal img {
-  max-width: 90%;
-  border-radius: 12px;
+  max-width: 90%; max-height: 85vh;
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
-
-.close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
+@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-close {
+  position: absolute; top: 18px; right: 20px;
+  color: white; font-size: 1.3rem;
+  background: rgba(255,255,255,0.15);
+  border: none; border-radius: 50%;
+  width: 38px; height: 38px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
 }
+.modal-close:hover { background: rgba(255,255,255,0.28); }
 </style>
 </head>
-
 <body>
 
 <!-- INICIO -->
 <div class="start-screen" id="start">
-  <h2 style="color:#c2185b;">Para ti 💗</h2>
-  <button class="music-btn" onclick="playMusic()">Toca aquí</button>
+  <div class="petals" id="petals"></div>
+  <div class="start-tag">✦ solo para ti ✦</div>
+  <div class="start-title">Nuestros<br>recuerdos</div>
+  <div class="start-sub">algo especial te espera aquí</div>
+  <button class="open-btn" onclick="openPage()">Abrir 💗</button>
 </div>
 
-<!-- CONTENIDO -->
+<!-- PÁGINA -->
 <div class="page" id="page">
+  <div class="page-eyebrow">✦ para ti ✦</div>
+  <h1 class="page-title">Nuestros recuerdos</h1>
+  <div class="page-sub">siempre en mi corazón</div>
 
-  <h2 class="title">Nuestros recuerdos</h2>
-  <div class="subtitle">siempre en mi corazón</div>
-
-  <!-- FOTOS -->
   <div class="photos-grid">
     <div class="photo-slot" onclick="openModal('MSG1.jpg')">
-      <img src="MSG1.jpg">
+      <img src="MSG1.jpg" alt="Recuerdo 1">
+      <div class="photo-overlay">🔍</div>
     </div>
     <div class="photo-slot" onclick="openModal('MSG2.jpg')">
-      <img src="MSG2.jpg">
+      <img src="MSG2.jpg" alt="Recuerdo 2">
+      <div class="photo-overlay">🔍</div>
     </div>
     <div class="photo-slot" onclick="openModal('MSG3.jpg')">
-      <img src="MSG3.jpg">
+      <img src="MSG3.jpg" alt="Recuerdo 3">
+      <div class="photo-overlay">🔍</div>
     </div>
   </div>
 
-  <!-- MENSAJES -->
-  <div class="message-card">
-    <div class="message-label">Un momento especial</div>
-    <p>
-No sé en qué instante exacto empezaste a volverte tan importante para mí, no hubo una fecha marcada ni un momento específico que pudiera señalar, simplemente pasó. Poco a poco te fuiste metiendo en mis pensamientos, en mis días, en mis emociones, hasta que sin darme cuenta ya eras parte de todo. Desde entonces, todo se siente diferente. Contigo no es solo reír o pasar el rato, contigo siento una tranquilidad que no había encontrado antes. Es como si en medio de todo el ruido del mundo, tú fueras ese lugar donde todo se calma, donde puedo ser yo sin miedo, donde simplemente estar contigo ya es suficiente para sentirme bien.
-    </p>
-  </div>
+  <div class="section-divider">💌 una carta por día</div>
+  <div class="section-title">Cartas para ti</div>
+  <div class="letters-list" id="lettersList"></div>
 
-  <div class="message-card">
-    <div class="message-label">Lo que más amo de ti</div>
-    <p>
-Amo la forma en la que eres, no solo en tus momentos buenos, sino también en tus días difíciles, cuando tal vez no tienes la mejor energía o cuando el mundo se te hace pesado. Amo tu autenticidad, porque no intentas ser alguien que no eres, porque te muestras tal cual, con tus virtudes y también con tus imperfecciones. No eres perfecta, y no necesitas serlo, porque lo que realmente vale es lo real que eres. Esa forma tuya de sentir, de pensar, de ser tan tú, es lo que me hace admirarte y quererte cada día más. Me gusta todo de ti, incluso esas partes que tal vez tú dudas, porque para mí son las que te hacen única.
-    </p>
-  </div>
-
-  <div class="message-card">
-    <div class="message-label">Mi promesa</div>
-    <p>
-No quiero prometerte algo irreal ni un cuento perfecto, porque sé que la vida no funciona así. Lo que sí quiero ofrecerte es algo verdadero, algo que se construya con ganas, con respeto y con intención. Prometo intentarlo de verdad, aprender, mejorar y hacer las cosas bien contigo. Prometo estar, no solo cuando todo sea fácil, sino también cuando haya momentos complicados. Porque si es contigo, entonces vale completamente la pena hacerlo bien, vale la pena cuidar lo que tenemos y hacerlo crecer de una forma bonita y sincera. No te prometo perfección, pero sí compromiso, sinceridad y un amor que quiera quedarse.
-    </p>
-  </div>
-
-  <!-- FLORES -->
   <div class="flowers">
-    <p>¿Recuerdas la primera vez que jugamos Roblox? Esta flor te representa,algo bonito, algo especial, algo que hace todo más lindo 💐</p>
-    <img src="flores.png">
+    <p>¿Recuerdas la primera vez que jugamos Roblox?<br>Esta flor te representa — algo bonito, algo especial 💐</p>
+    <img src="flores.png" alt="Flores">
   </div>
-
 </div>
 
 <!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="close" onclick="closeModal()">✖</div>
-  <img id="modalImg">
+<div class="modal" id="modal" onclick="closeModalBg(event)">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <img id="modalImg" src="" alt="">
 </div>
 
-<!-- AUDIO -->
-<audio id="music" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+<audio id="music" loop><source src="music.mp3" type="audio/mpeg"></audio>
 
 <script>
-function playMusic(){
-  const music = document.getElementById("music");
-  music.play();
+/* Pétalos */
+(function() {
+  const c = document.getElementById('petals');
+  const icons = ['🌸','💗','🌷','✨','💕','🌺','💓'];
+  for (let i = 0; i < 22; i++) {
+    const s = document.createElement('span');
+    s.className = 'petal';
+    s.textContent = icons[i % icons.length];
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.fontSize = (0.7 + Math.random() * 1) + 'rem';
+    s.style.animationDuration = (9 + Math.random() * 10) + 's';
+    s.style.animationDelay = (Math.random() * 12) + 's';
+    c.appendChild(s);
+  }
+})();
 
-  document.getElementById("start").style.display = "none";
-  document.getElementById("page").style.opacity = "1";
+function openPage() {
+  document.getElementById('music').play().catch(() => {});
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('page').classList.add('visible');
 }
 
-function openModal(img){
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("modalImg").src = img;
+function openModal(src) {
+  document.getElementById('modalImg').src = src;
+  document.getElementById('modal').classList.add('active');
 }
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+function closeModalBg(e) { if (e.target === document.getElementById('modal')) closeModal(); }
 
-function closeModal(){
-  document.getElementById("modal").style.display = "none";
+/* ─── Mensajes 30 días ─── */
+const START = new Date(2026, 3, 19);
+
+const MSGS = [
+  "Hoy empezó a sentirse raro todo. Te extraño más de lo que esperaba.",
+  "Hay cosas simples del día que me recuerdan a ti sin avisar.",
+  "Me hizo falta contarte algo hoy… y ahí entendí cuánto significas.",
+  "Tu ausencia pesa más en los momentos tranquilos.",
+  "A veces solo quisiera saber cómo estás.",
+  "Sigo pensando en ti, aunque intente distraerme.",
+  "Hay recuerdos contigo que no quiero que se me olviden nunca.",
+  "Hoy me reí de algo y pensé 'esto le gustaría'. Eso pasa más seguido de lo que crees.",
+  "No sé si tú también piensas en mí… pero yo sí pienso en ti.",
+  "Te sigo extrañando, pero también estoy aprendiendo a soltar un poco.",
+  "Escuché una canción hoy y me llevó directo a ti. A esos momentos que guardo como un tesoro.",
+  "Me pregunto si sabes lo mucho que me importas. Probablemente más de lo que te digo.",
+  "Hay días difíciles, y en los difíciles eres de las primeras personas en las que pienso.",
+  "Dos semanas. Y sigues siendo parte de mis pensamientos cada día.",
+  "Hoy vi algo gracioso y quise mandártelo de inmediato. Ese instinto no se va.",
+  "Hay una calma rara cuando pienso en ti. No sé explicarlo bien, pero es bonita.",
+  "A veces pienso en lo fácil que era hablar contigo. Cuánto agradezco eso.",
+  "Sigo sin saber exactamente qué somos, pero sí sé que me alegra que existamos.",
+  "Ya van 19 días desde que empezó todo esto. Y lo sigo recordando con una sonrisa.",
+  "Hay personas que dejan huella aunque no lo intenten. Tú eres una de esas personas.",
+  "Tres semanas y todavía me sorprendo pensando en ti en los momentos más aleatorios.",
+  "No hace falta estar todo el tiempo para importar. Tú importas, aunque no estés.",
+  "Hoy estuve en silencio un rato y pensé en lo mucho que valoras mis silencios también.",
+  "Hay algo en ti que hace que todo parezca más liviano. Te lo digo en serio.",
+  "Me alegra haber dicho sí a conocerte. A cada conversación, a cada momento.",
+  "Sigo guardando cosas para contarte. Eso dice mucho de lo que significas para mí.",
+  "Pensar en ti ya se volvió parte de mi rutina. Y no me molesta para nada.",
+  "Cuatro semanas. Y lo que siento no ha cambiado ni un poco.",
+  "Gracias por ser tú. Por ser real, por ser tierna, por ser exactamente como eres.",
+  "Un mes de pensar en ti, y podría seguir otro mes más sin dudarlo. Gracias por existir en mi vida. 💗"
+];
+
+const today = new Date(); today.setHours(0,0,0,0);
+const daysPassed = Math.floor((today - START) / 86400000);
+const list = document.getElementById('lettersList');
+
+MSGS.forEach((msg, i) => {
+  const d = new Date(START);
+  d.setDate(START.getDate() + i);
+  const dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+  const unlocked = i <= daysPassed;
+
+  const item = document.createElement('div');
+  item.className = 'letter-item ' + (unlocked ? 'available' : 'locked');
+
+  if (!unlocked) {
+    item.innerHTML = `
+      <div class="letter-front">
+        <div class="locked-badge">D${i+1}</div>
+        <div class="locked-text">${dateStr} — aún no disponible</div>
+        <div class="lock-icon">🔒</div>
+      </div>`;
+  } else {
+    const preview = msg.length > 52 ? msg.slice(0, 52) + '…' : msg;
+    item.innerHTML = `
+      <div class="letter-front" onclick="toggleLetter(this)">
+        <div class="day-badge">
+          <span class="day-num">${i+1}</span>
+          <span class="day-lbl">día</span>
+        </div>
+        <div class="letter-meta">
+          <div class="letter-date">${dateStr}</div>
+          <div class="letter-preview">${preview}</div>
+        </div>
+        <div class="letter-arrow">▾</div>
+      </div>
+      <div class="letter-body">
+        <div class="letter-body-inner"><p>${msg}</p></div>
+        <div class="letter-sig">💗</div>
+      </div>`;
+  }
+  list.appendChild(item);
+});
+
+function toggleLetter(front) {
+  const item = front.closest('.letter-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.letter-item.open').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) {
+    item.classList.add('open');
+    setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 120);
+  }
 }
 </script>
-
 </body>
 </html>
